@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll - Nova Payroll System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-space-shuttle"></i>
+                Nova<span>Payroll</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> Employees</a></li>
+                    <li><a href="departments.html"><i class="fas fa-building"></i> Departments</a></li>
+                    <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+                    <li><a href="payroll.html" class="active"><i class="fas fa-file-invoice-dollar"></i> Payroll</a></li>
+                    <li><a href="payslips.html"><i class="fas fa-receipt"></i> Payslips</a></li>
+                </ul>
+            </nav>
+            <div id="session-info"></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Payroll Pipeline</h1>
+                <p>Calculate, deduct, reward, and process monthly employee compensation packages.</p>
+            </div>
+        </div>
+
+        <div class="grid-layout">
+            <!-- Left Side: Add/Process Payroll Form -->
+            <div class="glass-panel" id="payroll-form-container">
+                <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-calculator" style="color: var(--primary); margin-right: 8px;"></i> Process Salary</h3>
+                <form id="add-payroll-form">
+                    <div class="form-group">
+                        <label for="payroll-emp-select">Select Employee</label>
+                        <select id="payroll-emp-select" name="employee_name" class="form-control" required>
+                            <option value="">Select Employee</option>
+                            <!-- Populated dynamically by script.js -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payroll-basic">Basic Salary</label>
+                        <input type="number" id="payroll-basic" name="basic_salary" class="form-control" placeholder="e.g. 60000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payroll-bonus">Performance Bonus</label>
+                        <input type="number" id="payroll-bonus" name="bonus" class="form-control" placeholder="e.g. 5000" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="payroll-deductions">Deductions (Tax, PF, Leaves)</label>
+                        <input type="number" id="payroll-deductions" name="deductions" class="form-control" placeholder="e.g. 2000" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="payroll-net">Net take-home Salary</label>
+                        <input type="number" id="payroll-net" class="form-control" readonly style="background: rgba(255,255,255,0.03); color: var(--success); font-weight: 700;">
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_month">Payment Month</label>
+                        <input type="text" id="payment_month" name="payment_month" class="form-control" placeholder="e.g. July 2026" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-cog"></i> Process & Log Payout
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Side: Payroll Logs Table -->
+            <div class="glass-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <h3>Payout Database Logs</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>Employee</th>
+                                <th>Month</th>
+                                <th>Basic Salary</th>
+                                <th>Bonus</th>
+                                <th>Deductions</th>
+                                <th>Net Salary</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payroll-table-body">
+                            <!-- Populated dynamically by script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for editing payroll records -->
+    <div class="modal-overlay" id="edit-payroll-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Payroll Record</h2>
+                <button class="modal-close" onclick="closeModal('edit-payroll-modal')">&times;</button>
+            </div>
+            <form id="edit-payroll-form">
+                <input type="hidden" id="edit-pr-id">
+                
+                <div class="form-group">
+                    <label for="edit-pr-name">Employee Name</label>
+                    <input type="text" id="edit-pr-name" name="employee_name" class="form-control" readonly style="background: rgba(255,255,255,0.03);">
+                </div>
+                <div class="form-group">
+                    <label for="edit-pr-basic">Basic Salary</label>
+                    <input type="number" id="edit-pr-basic" name="basic_salary" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-pr-bonus">Performance Bonus</label>
+                    <input type="number" id="edit-pr-bonus" name="bonus" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-pr-deductions">Deductions</label>
+                    <input type="number" id="edit-pr-deductions" name="deductions" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-pr-net">Net Salary</label>
+                    <input type="number" id="edit-pr-net" class="form-control" readonly style="background: rgba(255,255,255,0.03); color: var(--success); font-weight: 700;">
+                </div>
+                <div class="form-group">
+                    <label for="edit-pr-month">Payment Month</label>
+                    <input type="text" id="edit-pr-month" name="payment_month" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-payroll-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Nova Payroll Inc. All Rights Reserved. Built with Django REST API & Glassmorphism.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Pre-fill current month by default
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const d = new Date();
+        document.getElementById('payment_month').value = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+
+        // Lock form for employee view
+        window.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('user_role');
+            if (role === 'employee') {
+                const formContainer = document.getElementById('payroll-form-container');
+                if (formContainer) {
+                    formContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-lock" style="font-size: 3rem; color: var(--secondary); margin-bottom: 1.5rem;"></i>
+                            <h3>Access Restricted</h3>
+                            <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Only Admin staff can process salaries or modify logs.
+                            </p>
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance - Nova Payroll System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-space-shuttle"></i>
+                Nova<span>Payroll</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> Employees</a></li>
+                    <li><a href="departments.html"><i class="fas fa-building"></i> Departments</a></li>
+                    <li><a href="attendance.html" class="active"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+                    <li><a href="payroll.html"><i class="fas fa-file-invoice-dollar"></i> Payroll</a></li>
+                    <li><a href="payslips.html"><i class="fas fa-receipt"></i> Payslips</a></li>
+                </ul>
+            </nav>
+            <div id="session-info"></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Attendance Registry</h1>
+                <p>Track personnel daily office schedules, check-ins, and logs.</p>
+            </div>
+        </div>
+
+        <div class="grid-layout">
+            <!-- Left Side: Mark Attendance Form -->
+            <div class="glass-panel" id="attendance-form-container">
+                <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-calendar-plus" style="color: var(--primary); margin-right: 8px;"></i> Log Daily Schedule</h3>
+                <form id="add-attendance-form">
+                    <div class="form-group">
+                        <label for="attendance-emp-select">Select Employee</label>
+                        <select id="attendance-emp-select" name="employee_name" class="form-control" required>
+                            <option value="">Select Employee</option>
+                            <!-- Populated dynamically by script.js -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="attendance_date">Log Date</label>
+                        <input type="date" id="attendance_date" name="attendance_date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="check_in">Check-in Time</label>
+                        <input type="time" id="check_in" name="check_in" class="form-control" placeholder="09:00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="check_out">Check-out Time</label>
+                        <input type="time" id="check_out" name="check_out" class="form-control" placeholder="18:00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Presence Status</label>
+                        <select id="status" name="status" class="form-control" required>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Leave">Leave</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-check"></i> Mark Attendance
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Side: Attendance Logs Table -->
+            <div class="glass-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <h3>Telemetry Log Feed</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>Employee</th>
+                                <th>Date</th>
+                                <th>Check-in</th>
+                                <th>Check-out</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-table-body">
+                            <!-- Populated dynamically by script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for editing attendance logs -->
+    <div class="modal-overlay" id="edit-attendance-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Attendance Log</h2>
+                <button class="modal-close" onclick="closeModal('edit-attendance-modal')">&times;</button>
+            </div>
+            <form id="edit-attendance-form">
+                <input type="hidden" id="edit-att-id">
+                
+                <div class="form-group">
+                    <label for="edit-att-name">Employee Name</label>
+                    <input type="text" id="edit-att-name" name="employee_name" class="form-control" readonly style="background: rgba(255,255,255,0.03);">
+                </div>
+                <div class="form-group">
+                    <label for="edit-att-date">Log Date</label>
+                    <input type="date" id="edit-att-date" name="attendance_date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-check-in">Check-in Time</label>
+                    <input type="time" id="edit-check-in" name="check_in" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-check-out">Check-out Time</label>
+                    <input type="time" id="edit-check-out" name="check_out" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-att-status">Presence Status</label>
+                    <select id="edit-att-status" name="status" class="form-control" required>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                        <option value="Leave">Leave</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-attendance-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Nova Payroll Inc. All Rights Reserved. Built with Django REST API & Glassmorphism.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Set default date to today for convenience
+        document.getElementById('attendance_date').valueAsDate = new Date();
+
+        // Lock form for employee view
+        window.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('user_role');
+            if (role === 'employee') {
+                const formContainer = document.getElementById('attendance-form-container');
+                if (formContainer) {
+                    formContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-lock" style="font-size: 3rem; color: var(--secondary); margin-bottom: 1.5rem;"></i>
+                            <h3>Access Restricted</h3>
+                            <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Only Admin staff can log or delete attendance telemetry.
+                            </p>
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

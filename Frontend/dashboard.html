@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Nova Payroll System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-space-shuttle"></i>
+                Nova<span>Payroll</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> Employees</a></li>
+                    <li><a href="departments.html"><i class="fas fa-building"></i> Departments</a></li>
+                    <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+                    <li><a href="payroll.html"><i class="fas fa-file-invoice-dollar"></i> Payroll</a></li>
+                    <li><a href="payslips.html"><i class="fas fa-receipt"></i> Payslips</a></li>
+                </ul>
+            </nav>
+            <div id="session-info"></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">
+                <h1>HR & Administrative Dashboard</h1>
+                <p>Real-time analytics and telemetry across all operational modules.</p>
+            </div>
+        </div>
+
+        <!-- Stats Counter Cards Grid -->
+        <div class="grid-4" style="margin-bottom: 2rem;">
+            <!-- Stat 1 -->
+            <div class="glass-panel stat-card">
+                <div class="stat-icon primary">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-details">
+                    <h3 id="total-employees-count">0</h3>
+                    <p>Total Employees</p>
+                </div>
+            </div>
+
+            <!-- Stat 2 -->
+            <div class="glass-panel stat-card">
+                <div class="stat-icon secondary">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="stat-details">
+                    <h3 id="total-departments-count">0</h3>
+                    <p>Total Departments</p>
+                </div>
+            </div>
+
+            <!-- Stat 3 -->
+            <div class="glass-panel stat-card">
+                <div class="stat-icon success">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-details">
+                    <h3 id="attendance-rate">0.0%</h3>
+                    <p>Attendance Rate</p>
+                </div>
+            </div>
+
+            <!-- Stat 4 -->
+            <div class="glass-panel stat-card">
+                <div class="stat-icon accent">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-details">
+                    <h3 id="total-payroll-cost">₹0</h3>
+                    <p>Monthly Payouts</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-layout">
+            <!-- Left Side Panel: System Overview & Actions -->
+            <div class="glass-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <h3>System Telemetry</h3>
+                <div style="background: rgba(255, 255, 255, 0.02); padding: 1.25rem; border-radius: 12px; border: 1px solid var(--panel-border);">
+                    <h4 style="margin-bottom: 0.5rem; color: var(--primary);">Payment Status Summary</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                        <span style="color: var(--text-muted);">Salary Slip Credits:</span>
+                        <strong id="paid-slips-stat" style="color: var(--success);">0 / 0 Paid</strong>
+                    </div>
+                </div>
+
+                <h3>Quick Navigation Shortcuts</h3>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">
+                    <a href="employees.html" class="btn btn-secondary" style="justify-content: flex-start; text-decoration: none;">
+                        <i class="fas fa-user-plus" style="color: var(--primary);"></i> Manage Employees
+                    </a>
+                    <a href="attendance.html" class="btn btn-secondary" style="justify-content: flex-start; text-decoration: none;">
+                        <i class="fas fa-check-double" style="color: var(--success);"></i> Audit Daily Attendance
+                    </a>
+                    <a href="payroll.html" class="btn btn-secondary" style="justify-content: flex-start; text-decoration: none;">
+                        <i class="fas fa-dollar-sign" style="color: var(--secondary);"></i> Calculate Monthly Payroll
+                    </a>
+                    <a href="payslips.html" class="btn btn-secondary" style="justify-content: flex-start; text-decoration: none;">
+                        <i class="fas fa-print" style="color: var(--accent);"></i> Generate Payslips
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Side Panel: Recent Activity Log Feed -->
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <h3 style="margin-bottom: 0.5rem;"><i class="fas fa-history" style="color: var(--primary); margin-right: 8px;"></i> Recent System Activities</h3>
+                <div id="recent-activities-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <!-- Activities populated dynamically by script.js -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Nova Payroll Inc. All Rights Reserved. Built with Django REST API & Glassmorphism.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employees - Nova Payroll System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-space-shuttle"></i>
+                Nova<span>Payroll</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                    <li><a href="employees.html" class="active"><i class="fas fa-users"></i> Employees</a></li>
+                    <li><a href="departments.html"><i class="fas fa-building"></i> Departments</a></li>
+                    <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+                    <li><a href="payroll.html"><i class="fas fa-file-invoice-dollar"></i> Payroll</a></li>
+                    <li><a href="payslips.html"><i class="fas fa-receipt"></i> Payslips</a></li>
+                </ul>
+            </nav>
+            <div id="session-info"></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Employee Directory</h1>
+                <p>Register, update, and manage employee employment profiles.</p>
+            </div>
+        </div>
+
+        <div class="grid-layout">
+            <!-- Left Side: Registration Form -->
+            <div class="glass-panel" id="employee-form-container">
+                <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-user-plus" style="color: var(--primary); margin-right: 8px;"></i> Employee Registration</h3>
+                <form id="add-employee-form">
+                    <div class="form-group">
+                        <label for="employee_id">Employee ID</label>
+                        <input type="number" id="employee_id" name="employee_id" class="form-control" placeholder="e.g. 102" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="name@company.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="9876543210" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <input type="text" id="department" name="department" class="form-control" placeholder="e.g. Software Development" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="designation">Designation</label>
+                        <input type="text" id="designation" name="designation" class="form-control" placeholder="e.g. Python Developer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="joining_date">Joining Date</label>
+                        <input type="date" id="joining_date" name="joining_date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="salary">Base Salary (Monthly)</label>
+                        <input type="number" id="salary" name="salary" class="form-control" placeholder="e.g. 60000" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-save"></i> Register Employee
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Side: Employee Records Table -->
+            <div class="glass-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <h3>Active Employees</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Joined</th>
+                                <th>Salary</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employee-table-body">
+                            <!-- Populated dynamically by script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for editing employee details -->
+    <div class="modal-overlay" id="edit-employee-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Employee Profile</h2>
+                <button class="modal-close" onclick="closeModal('edit-employee-modal')">&times;</button>
+            </div>
+            <form id="edit-employee-form">
+                <input type="hidden" id="edit-emp-id">
+                
+                <div class="form-group">
+                    <label for="edit-full-name">Full Name</label>
+                    <input type="text" id="edit-full-name" name="full_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-email">Email Address</label>
+                    <input type="email" id="edit-email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-phone">Phone Number</label>
+                    <input type="tel" id="edit-phone" name="phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-department">Department</label>
+                    <input type="text" id="edit-department" name="department" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-designation">Designation</label>
+                    <input type="text" id="edit-designation" name="designation" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-joining-date">Joining Date</label>
+                    <input type="date" id="edit-joining-date" name="joining_date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-salary">Base Salary (Monthly)</label>
+                    <input type="number" id="edit-salary" name="salary" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-employee-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Nova Payroll Inc. All Rights Reserved. Built with Django REST API & Glassmorphism.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Restrict employee form from rendering if logged in as employee
+        window.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('user_role');
+            if (role === 'employee') {
+                const formContainer = document.getElementById('employee-form-container');
+                if (formContainer) {
+                    formContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-lock" style="font-size: 3rem; color: var(--secondary); margin-bottom: 1.5rem;"></i>
+                            <h3>Access Restricted</h3>
+                            <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Only HR Administrators can register or delete personnel.
+                            </p>
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Payroll - Employee Management & Payroll System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-space-shuttle"></i>
+                Nova<span>Payroll</span>
+            </a>
+            <div id="session-info">
+                <!-- Session data loaded dynamically -->
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero-section">
+            <h1>Employee Management & Payroll System</h1>
+            <p>A premium cloud-native solution for HR administrations to manage employee records, department structures, daily attendance cycles, and monthly payroll disbursement pipelines.</p>
+        </div>
+
+        <div class="login-grid">
+            <!-- HR / Admin Login Card -->
+            <div class="glass-panel login-card" style="border-top: 3px solid var(--primary);">
+                <i class="fas fa-user-shield"></i>
+                <h2>HR / Admin Portal</h2>
+                <p>Access the administrative suite to register new personnel, audit department quotas, regulate attendance, and process monthly payouts.</p>
+                <button onclick="loginAsAdmin()" class="btn btn-primary" style="width: 100%;">
+                    Access Admin Dashboard <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Employee Login Card -->
+            <div class="glass-panel login-card" style="border-top: 3px solid var(--secondary);">
+                <i class="fas fa-user-tie"></i>
+                <h2>Employee Portal</h2>
+                <p>View your personal profile details, audit your checked-in attendance records, and retrieve printed copy of your monthly salary statements.</p>
+                <button onclick="openEmployeeLogin()" class="btn btn-secondary" style="width: 100%; border-color: rgba(168, 85, 247, 0.3);">
+                    Access Employee Portal <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Employee Login input -->
+    <div class="modal-overlay" id="emp-login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Employee Verification</h2>
+                <button class="modal-close" onclick="closeModal('emp-login-modal')">&times;</button>
+            </div>
+            <form id="emp-login-form">
+                <div class="form-group">
+                    <label for="login-emp-name">Enter your Full Name:</label>
+                    <input type="text" id="login-emp-name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Verify & Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Nova Payroll Inc. All Rights Reserved. Built with Django REST API & Glassmorphism.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function loginAsAdmin() {
+            localStorage.setItem('user_role', 'admin');
+            localStorage.setItem('user_name', 'HR Administrator');
+            showAlert("Logged in as Administrator");
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 600);
+        }
+
+        function openEmployeeLogin() {
+            openModal('emp-login-modal');
+        }
+
+        document.getElementById('emp-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('login-emp-name').value.trim();
+            if (!name) return;
+
+            try {
+                // Check if employee exists in the database
+                const res = await fetch(`${API_BASE}/employees/`);
+                if (res.ok) {
+                    const employees = await res.json();
+                    const found = employees.find(emp => emp.full_name.toLowerCase() === name.toLowerCase());
+                    if (found) {
+                        localStorage.setItem('user_role', 'employee');
+                        localStorage.setItem('user_name', found.full_name);
+                        localStorage.setItem('user_emp_id', found.employee_id);
+                        closeModal('emp-login-modal');
+                        showAlert(`Welcome back, ${found.full_name}!`);
+                        setTimeout(() => {
+                            window.location.href = "dashboard.html";
+                        }, 800);
+                    } else {
+                        showAlert(`Employee "${name}" not found in database. Try "Rahul Sharma" (default).`, "danger");
+                    }
+                }
+            } catch (err) {
+                showAlert("Unable to connect to Server API", "danger");
+            }
+        });
+    </script>
+</body>
+</html>

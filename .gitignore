@@ -1,0 +1,12 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django dummy database (Django configuration requirement, not our raw SQLite database)
+db_dummy.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db

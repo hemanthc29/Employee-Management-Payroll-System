@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payslips - Nova Payroll System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="no-print">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-space-shuttle"></i>
+                Nova<span>Payroll</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> Employees</a></li>
+                    <li><a href="departments.html"><i class="fas fa-building"></i> Departments</a></li>
+                    <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> Attendance</a></li>
+                    <li><a href="payroll.html"><i class="fas fa-file-invoice-dollar"></i> Payroll</a></li>
+                    <li><a href="payslips.html" class="active"><i class="fas fa-receipt"></i> Payslips</a></li>
+                </ul>
+            </nav>
+            <div id="session-info"></div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header no-print">
+            <div class="page-title">
+                <h1>Salary Slips Manager</h1>
+                <p>Generate, edit, audit, print, and download employee payroll receipts.</p>
+            </div>
+        </div>
+
+        <div class="grid-layout no-print">
+            <!-- Left Side: Generate Salary Slip Receipt Form -->
+            <div class="glass-panel" id="payslip-form-container">
+                <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-file-invoice-dollar" style="color: var(--primary); margin-right: 8px;"></i> Generate Slip Receipt</h3>
+                <form id="add-payslip-form">
+                    <div class="form-group">
+                        <label for="payslip-emp-select">Select Employee</label>
+                        <select id="payslip-emp-select" name="employee_name" class="form-control" required>
+                            <option value="">Select Employee</option>
+                            <!-- Populated dynamically by script.js -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_date">Payment Date</label>
+                        <input type="date" id="payment_date" name="payment_date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method</label>
+                        <select id="payment_method" name="payment_method" class="form-control" required>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Cash">Cash</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_status">Payment Status</label>
+                        <select id="payment_status" name="payment_status" class="form-control" required>
+                            <option value="Paid">Paid</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="remarks">Remarks / Description</label>
+                        <input type="text" id="remarks" name="remarks" class="form-control" placeholder="e.g. Salary credited successfully">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-receipt"></i> Generate Payslip Log
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Side: Salary Slips Records Table -->
+            <div class="glass-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <h3>Salary Slip Database Logs</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Slip ID</th>
+                                <th>Employee</th>
+                                <th>Paid Date</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payslips-table-body">
+                            <!-- Populated dynamically by script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Printable Salary Slip Display Section -->
+        <div id="printable-payslip" class="payslip-slip">
+            <!-- Populated dynamically by script.js when "View Slip" is clicked -->
+        </div>
+    </main>
+
+    <!-- Modal for editing salary slips -->
+    <div class="modal-overlay" id="edit-payslip-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Salary Slip Log</h2>
+                <button class="modal-close" onclick="closeModal('edit-payslip-modal')">&times;</button>
+            </div>
+            <form id="edit-payslip-form">
+                <input type="hidden" id="edit-ps-id">
+                
+                <div class="form-group">
+                    <label for="edit-ps-name">Employee Name</label>
+                    <input type="text" id="edit-ps-name" name="employee_name" class="form-control" readonly style="background: rgba(255,255,255,0.03);">
+                </div>
+                <div class="form-group">
+                    <label for="edit-ps-date">Payment Date</label>
+                    <input type="date" id="edit-ps-date" name="payment_date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ps-method">Payment Method</label>
+                    <select id="edit-ps-method" name="payment_method" class="form-control" required>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Cash">Cash</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ps-status">Payment Status</label>
+                    <select id="edit-ps-status" name="payment_status" class="form-control" required>
+                        <option value="Paid">Paid</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-ps-remarks">Remarks</label>
+                    <input type="text" id="edit-ps-remarks" name="remarks" class="form-control">
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-payslip-modal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="no-print">
+        <p>&copy; 2026 Nova Payroll Inc. All Rights Reserved. Built with Django REST API & Glassmorphism.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Pre-fill payment date with today
+        document.getElementById('payment_date').valueAsDate = new Date();
+
+        // Lock form for employee view
+        window.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('user_role');
+            if (role === 'employee') {
+                const formContainer = document.getElementById('payslip-form-container');
+                if (formContainer) {
+                    formContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-lock" style="font-size: 3rem; color: var(--secondary); margin-bottom: 1.5rem;"></i>
+                            <h3>Access Restricted</h3>
+                            <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.9rem;">
+                                Only Admin staff can process new payslips.
+                            </p>
+                        </div>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
